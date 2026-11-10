@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>제주도 여행 가이드 | Jeju Island</title>
+  <meta name="description" content="한라산, 성산일출봉, 해녀 문화와 흑돼지까지. 제주도 대표 관광지와 맛집, 계절별 여행 팁을 한눈에.">
+  <style>
+    :root {
+      --bg: #fbfaf6;
+      --surface: #ffffff;
+      --fg: #1c2b2d;
+      --muted: #5d6b6d;
+      --line: #e4e2da;
+      --ocean: #0e7c86;
+      --ocean-dark: #0a5a62;
+      --tangerine: #f08a1c;
+      --basalt: #2b2f33;
+      --shadow: 0 6px 24px rgba(20, 40, 45, .08);
+      --radius: 16px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f1719;
+        --surface: #172124;
+        --fg: #eaf1f1;
+        --muted: #9db0b2;
+        --line: #26353a;
+        --ocean: #3fc1cc;
+        --ocean-dark: #2a9ba5;
+        --shadow: 0 6px 24px rgba(0, 0, 0, .35);
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: system-ui, -apple-system, "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+      line-height: 1.7;
+    }
+    a { color: inherit; text-decoration: none; }
+    .wrap { width: min(1120px, 100% - 32px); margin-inline: auto; }
+
+    /* Nav */
+    header.nav {
+      position: sticky; top: 0; z-index: 10;
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+    .logo { font-weight: 800; letter-spacing: -.02em; }
+    .logo span { color: var(--tangerine); }
+    .nav ul { display: flex; gap: 22px; list-style: none; font-size: .95rem; }
+    .nav ul a { color: var(--muted); transition: color .2s; }
+    .nav ul a:hover { color: var(--ocean); }
+
+    /* Hero */
+    .hero {
+      position: relative; overflow: hidden; color: #fff;
+      background:
+        radial-gradient(circle at 78% 22%, #ffd28a 0 7%, rgba(255, 210, 138, 0) 8%),
+        linear-gradient(180deg, #5ec4d1 0%, #1b8f9c 48%, #0a5a62 100%);
+      padding: clamp(72px, 14vw, 150px) 0 clamp(130px, 18vw, 200px);
+    }
+    .hero .wrap { position: relative; z-index: 2; }
+    .eyebrow { font-size: .9rem; letter-spacing: .25em; opacity: .9; }
+    .hero h1 { font-size: clamp(2.4rem, 7vw, 4.6rem); line-height: 1.15; margin: 10px 0 16px; letter-spacing: -.03em; }
+    .hero p { max-width: 34rem; font-size: 1.1rem; opacity: .95; }
+    .btns { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .btn {
+      display: inline-block; padding: .75rem 1.5rem; border-radius: 999px;
+      font-weight: 600; transition: transform .15s, background .2s;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn.primary { background: var(--tangerine); color: #fff; }
+    .btn.ghost { border: 1.5px solid rgba(255, 255, 255, .7); color: #fff; }
+    .hero svg { position: absolute; left: 0; bottom: -1px; width: 100%; height: clamp(110px, 16vw, 190px); z-index: 1; }
+
+    .wave-fill { fill: var(--bg); }
+
+    /* Sections */
+    section { padding: 72px 0; }
+    .sec-head { margin-bottom: 32px; }
+    .sec-head small { color: var(--tangerine); font-weight: 700; letter-spacing: .15em; }
+    .sec-head h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); letter-spacing: -.02em; margin-top: 4px; }
+    .sec-head p { color: var(--muted); margin-top: 6px; }
+
+    /* Facts */
+    .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; margin-top: -90px; position: relative; z-index: 3; padding: 0; }
+    .fact { background: var(--surface); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); text-align: center; }
+    .fact b { display: block; font-size: 1.7rem; color: var(--ocean); }
+    .fact span { color: var(--muted); font-size: .92rem; }
+
+    /* Filter + cards */
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+    .tab {
+      border: 1px solid var(--line); background: var(--surface); color: var(--fg);
+      padding: .5rem 1.1rem; border-radius: 999px; font-size: .95rem; cursor: pointer; font-family: inherit;
+    }
+    .tab[aria-pressed="true"] { background: var(--ocean); border-color: var(--ocean); color: #fff; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+    .card {
+      background: var(--surface); border-radius: var(--radius); overflow: hidden;
+      box-shadow: var(--shadow); display: flex; flex-direction: column; transition: transform .2s;
+    }
+    .card:hover { transform: translateY(-4px); }
+    .card[hidden] { display: none; }
+    .thumb { height: 140px; display: grid; place-items: center; font-size: 3.4rem; }
+    .t-nature { background: linear-gradient(135deg, #7ed6a5, #1f8a70); }
+    .t-sea { background: linear-gradient(135deg, #8fdcf0, #1b78b5); }
+    .t-food { background: linear-gradient(135deg, #ffcf8a, #e8671a); }
+    .t-culture { background: linear-gradient(135deg, #c9c3b8, #4a4f55); }
+    .card-body { padding: 18px 20px 22px; }
+    .badge { font-size: .75rem; font-weight: 700; color: var(--ocean); letter-spacing: .05em; }
+    .card h3 { font-size: 1.15rem; margin: 2px 0 6px; }
+    .card p { color: var(--muted); font-size: .93rem; }
+
+    /* Seasons */
+    .seasons { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .season { border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; background: var(--surface); }
+    .season h3 { margin-bottom: 6px; }
+    .season .em { font-size: 1.8rem; }
+    .season p { color: var(--muted); font-size: .93rem; }
+
+    /* Itinerary */
+    .plan { display: grid; gap: 14px; counter-reset: day; }
+    .day { display: grid; grid-template-columns: 72px 1fr; gap: 16px; background: var(--surface); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+    .day::before {
+      counter-increment: day; content: "D" counter(day);
+      display: grid; place-items: center; height: 56px; border-radius: 14px;
+      background: var(--ocean); color: #fff; font-weight: 800; font-size: 1.15rem;
+    }
+    .day h3 { font-size: 1.05rem; }
+    .day p { color: var(--muted); font-size: .93rem; }
+
+    /* Tips */
+    .tips { background: var(--basalt); color: #f2f2f2; border-radius: 24px; padding: clamp(28px, 5vw, 48px); }
+    .tips ul { list-style: none; display: grid; gap: 14px; margin-top: 18px; }
+    .tips li::before { content: "🍊 "; }
+    .tips li { opacity: .92; }
+
+    footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--muted); text-align: center; font-size: .88rem; }
+
+    @media (max-width: 640px) {
+      .nav ul { gap: 14px; font-size: .85rem; }
+      .logo { font-size: .95rem; }
+      .day { grid-template-columns: 56px 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .card, .btn { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="nav">
+    <div class="wrap">
+      <a href="#top" class="logo">Jeju<span>.</span>Guide</a>
+      <nav>
+        <ul>
+          <li><a href="#spots">명소</a></li>
+          <li><a href="#season">계절</a></li>
+          <li><a href="#plan">일정</a></li>
+          <li><a href="#tips">팁</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- Hero -->
+    <div class="hero">
+      <div class="wrap">
+        <div class="eyebrow">JEJU ISLAND · 제주도</div>
+        <h1>바람, 돌, 바다가<br>만든 섬 제주</h1>
+        <p>한라산부터 에메랄드빛 해변, 흑돼지와 감귤까지. 제주에서만 만날 수 있는 풍경과 맛을 소개합니다.</p>
+        <div class="btns">
+          <a class="btn primary" href="#spots">추천 명소 보기</a>
+          <a class="btn ghost" href="#plan">3박 4일 일정</a>
+        </div>
+      </div>
+      <svg viewBox="0 0 1440 200" preserveAspectRatio="none" aria-hidden="true">
+        <path fill="rgba(255,255,255,.25)" d="M0,120 C240,60 420,170 720,110 C1000,55 1200,150 1440,100 L1440,200 L0,200Z"/>
+        <path class="wave-fill"d="M0,150 C300,110 520,190 800,150 C1060,112 1250,170 1440,140 L1440,200 L0,200Z"/>
+      </svg>
+    </div>
+
+    <!-- Facts -->
+    <div class="wrap facts">
+      <div class="fact"><b>1,947m</b><span>한라산 · 남한 최고봉</span></div>
+      <div class="fact"><b>UNESCO</b><span>세계자연유산 (2007)</span></div>
+      <div class="fact"><b>삼다도</b><span>돌 · 바람 · 여자</span></div>
+      <div class="fact"><b>1시간</b><span>서울에서 항공편 기준 약</span></div>
+    </div>
+
+    <!-- Spots -->
+    <section id="spots">
+      <div class="wrap">
+        <div class="sec-head">
+          <small>DESTINATIONS</small>
+          <h2>꼭 가봐야 할 제주</h2>
+          <p>카테고리를 눌러 원하는 여행 스타일만 골라보세요.</p>
+        </div>
+
+        <div class="tabs" role="group" aria-label="카테고리 필터">
+          <button class="tab" data-filter="all" aria-pressed="true">전체</button>
+          <button class="tab" data-filter="nature" aria-pressed="false">자연</button>
+          <button class="tab" data-filter="sea" aria-pressed="false">바다</button>
+          <button class="tab" data-filter="food" aria-pressed="false">먹거리</button>
+          <button class="tab" data-filter="culture" aria-pressed="false">문화</button>
+        </div>
+
+        <div class="grid">
+          <article class="card" data-cat="nature">
+            <div class="thumb t-nature">⛰️</div>
+            <div class="card-body">
+              <span class="badge">자연 · 세계자연유산</span>
+              <h3>한라산</h3>
+              <p>해발 1,947m의 제주 중심. 백록담까지 오르는 성판악·관음사 탐방로가 대표적이며, 탐방 예약제를 확인하세요.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="nature">
+            <div class="thumb t-nature">🌋</div>
+            <div class="card-body">
+              <span class="badge">자연 · 세계자연유산</span>
+              <h3>성산일출봉</h3>
+              <p>바다에서 솟은 분화구. 정상까지 약 30분이면 오르며, 이름 그대로 일출 명소로 유명합니다.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="nature">
+            <div class="thumb t-nature">🕳️</div>
+            <div class="card-body">
+              <span class="badge">자연 · 용암동굴</span>
+              <h3>만장굴</h3>
+              <p>거문오름 용암동굴계의 대표 동굴. 일부 구간만 개방되며, 여름에도 서늘하니 겉옷을 챙기세요.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="nature">
+            <div class="thumb t-nature">💧</div>
+            <div class="card-body">
+              <span class="badge">자연 · 폭포</span>
+              <h3>천지연폭포</h3>
+              <p>서귀포 시내 가까이에 있는 폭포. 산책로가 잘 정비되어 있어 가볍게 둘러보기 좋습니다.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="sea">
+            <div class="thumb t-sea">🏖️</div>
+            <div class="card-body">
+              <span class="badge">바다 · 해수욕장</span>
+              <h3>협재·함덕 해변</h3>
+              <p>맑은 에메랄드빛 바다와 고운 모래. 협재에서는 멀리 비양도가 보이고, 함덕은 카페와 산책로가 가깝습니다.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="sea">
+            <div class="thumb t-sea">🚢</div>
+            <div class="card-body">
+              <span class="badge">바다 · 섬 속의 섬</span>
+              <h3>우도</h3>
+              <p>성산항에서 배로 이동하는 작은 섬. 자전거나 전기차로 해안 도로를 한 바퀴 돌아보세요.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="sea">
+            <div class="thumb t-sea">🪨</div>
+            <div class="card-body">
+              <span class="badge">바다 · 지질 명소</span>
+              <h3>주상절리대</h3>
+              <p>용암이 식으며 만들어진 육각 기둥 절벽. 파도가 부딪히는 모습이 장관입니다.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="food">
+            <div class="thumb t-food">🥓</div>
+            <div class="card-body">
+              <span class="badge">먹거리 · 향토음식</span>
+              <h3>제주 흑돼지</h3>
+              <p>쫄깃한 식감과 고소한 맛으로 유명한 제주의 대표 고기. 멜젓(멸치젓)에 찍어 먹는 것이 제주식입니다.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="food">
+            <div class="thumb t-food">🐟</div>
+            <div class="card-body">
+              <span class="badge">먹거리 · 해산물</span>
+              <h3>갈치조림 · 전복죽</h3>
+              <p>제주 바다의 맛을 담은 두 가지 대표 메뉴. 전복죽은 든든한 아침 식사로도 인기입니다.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="food">
+            <div class="thumb t-food">🍊</div>
+            <div class="card-body">
+              <span class="badge">먹거리 · 특산물</span>
+              <h3>감귤 · 한라봉</h3>
+              <p>겨울철에는 감귤 따기 체험도 가능합니다. 귤 초콜릿, 감귤 주스 등 기념품으로도 좋아요.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="culture">
+            <div class="thumb t-culture">🤿</div>
+            <div class="card-body">
+              <span class="badge">문화 · 무형유산</span>
+              <h3>해녀 문화</h3>
+              <p>숨 하나로 바다에 들어가 해산물을 채취하는 제주 해녀. 유네스코 인류무형문화유산으로 등재되어 있습니다.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="culture">
+            <div class="thumb t-culture">🥾</div>
+            <div class="card-body">
+              <span class="badge">문화 · 걷기 여행</span>
+              <h3>제주 올레길</h3>
+              <p>해안과 마을, 오름을 잇는 도보 여행길. 코스별 난이도가 달라 일정에 맞게 골라 걸을 수 있습니다.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="culture">
+            <div class="thumb t-culture">🗿</div>
+            <div class="card-body">
+              <span class="badge">문화 · 상징</span>
+              <h3>돌하르방</h3>
+              <p>현무암으로 만든 제주의 수호신. 제주 곳곳에서 만날 수 있고, 기념사진 명소이기도 합니다.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seasons -->
+    <section id="season" style="background: color-mix(in srgb, var(--ocean) 6%, var(--bg));">
+      <div class="wrap">
+        <div class="sec-head">
+          <small>SEASONS</small>
+          <h2>계절별 제주</h2>
+          <p>언제 가도 다른 얼굴을 보여주는 섬입니다.</p>
+        </div>
+        <div class="seasons">
+          <div class="season"><div class="em">🌼</div><h3>봄 (3–5월)</h3><p>유채꽃과 벚꽃이 피는 시기. 가파도 청보리밭도 이 무렵 볼 수 있습니다.</p></div>
+          <div class="season"><div class="em">🌊</div><h3>여름 (6–8월)</h3><p>해수욕과 물놀이의 계절. 수국이 피고, 소나기와 태풍 소식은 미리 확인하세요.</p></div>
+          <div class="season"><div class="em">🌾</div><h3>가을 (9–11월)</h3><p>억새가 물드는 오름 트레킹의 적기. 날씨가 맑고 선선해 걷기 좋습니다.</p></div>
+          <div class="season"><div class="em">❄️</div><h3>겨울 (12–2월)</h3><p>동백꽃과 감귤의 계절. 한라산 설경은 눈이 온 뒤 특히 아름답습니다.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Itinerary -->
+    <section id="plan">
+      <div class="wrap">
+        <div class="sec-head">
+          <small>ITINERARY</small>
+          <h2>3박 4일 추천 일정</h2>
+          <p>동서남북을 고르게 돌아보는 기본 코스입니다.</p>
+        </div>
+        <div class="plan">
+          <div class="day"><div><h3>제주 서쪽 · 협재 해변</h3><p>공항 도착 → 협재 해변 → 한림 일대 카페 → 흑돼지 저녁</p></div></div>
+          <div class="day"><div><h3>제주 남쪽 · 서귀포</h3><p>천지연폭포 → 주상절리대 → 올레길 일부 걷기 → 갈치조림</p></div></div>
+          <div class="day"><div><h3>제주 동쪽 · 성산·우도</h3><p>성산일출봉 일출 → 우도 자전거 일주 → 함덕 해변 석양</p></div></div>
+          <div class="day"><div><h3>제주 시내 · 마무리</h3><p>만장굴 또는 시장 구경 → 감귤 기념품 쇼핑 → 공항</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tips -->
+    <section id="tips" style="padding-top: 0;">
+      <div class="wrap">
+        <div class="tips">
+          <div class="sec-head" style="margin:0;">
+            <small>TRAVEL TIPS</small>
+            <h2>여행 전 알아두세요</h2>
+          </div>
+          <ul>
+            <li><strong>렌터카</strong>는 대중교통이 닿기 어려운 곳이 많아 편리합니다. 성수기에는 일찍 예약하세요.</li>
+            <li><strong>바람</strong>이 강한 날이 많아 겉옷과 모자 고정에 신경 쓰세요.</li>
+            <li><strong>날씨</strong>가 지역별로 크게 다를 수 있으니 일정은 여유 있게 잡으세요.</li>
+            <li><strong>한라산</strong> 등반은 탐방 예약 여부와 입산 시간을 사전에 확인하세요.</li>
+            <li><strong>운영시간·요금</strong>은 변동될 수 있으니 방문 전 공식 안내를 확인하세요.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">© 2026 Jeju Guide · 연습용 여행 소개 페이지입니다. 정확한 운영 정보는 공식 사이트에서 확인하세요.</div>
+  </footer>
+
+  <script>
+    // 카테고리 필터
+    const tabs = document.querySelectorAll('.tab');
+    const cards = document.querySelectorAll('.card');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const f = tab.dataset.filter;
+        tabs.forEach(t => t.setAttribute('aria-pressed', String(t === tab)));
+        cards.forEach(c => { c.hidden = !(f === 'all' || c.dataset.cat === f); });
+      });
+    });
+  </script>
+</body>
+</html>
